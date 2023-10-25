@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+span{
+    display: block;
+    color: tomato;
+    font-size: small;
+    font-style: italic;
+}
