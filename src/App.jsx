@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
+
 import logo from './assets/BS-Corp-Logo.png'
 
 function App () {
@@ -99,8 +100,8 @@ function App () {
       <div>
         {formularioEnviado
           ? (
-            <div className='flex justify-center text-sm'>
-              <div className='flex flex-col max-w-screen-lg px-10 '>
+            <div className='flex justify-center text-sm px-4'>
+              <div className='flex flex-col max-w-screen-lg  '>
                 <div className='w-full max-w-screen-lg flex justify-between py-8 items-center border-b-2 border-gray-500 '>
                   <div><img src={logo} alt='Logo' /></div>
                   <div className='text-lg font-semibold'>COTIZACIÓN</div>
@@ -112,7 +113,8 @@ function App () {
                 </div>
                 <div className='w-full max-w-screen-lg flex flex-col py-4'>
                   <div className='font-semibold'>Marca: {watch('marca', '')} </div>
-                  <div className='font-semibold'>Precio: <input type='text' value={watch('precio', '')} /> </div>
+                  <div className='font-semibold'>Precio: <input type='text' defaultValue={watch('precio', '')} /> </div>
+
                 </div>
                 <div className='w-full max-w-screen-lg flex flex-row p-4 bg-sky-600 text-white text-center'>
                   <div className='w-1/5'>
