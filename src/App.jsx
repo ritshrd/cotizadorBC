@@ -130,7 +130,7 @@ function App () {
 
                   </div>
                   <div className='w-1/5'>
-                    <div className='font-semibold'>Cuotas</div>
+                    <div className='font-semibold text-right'>Cuota</div>
 
                   </div>
 
