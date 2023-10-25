@@ -56,19 +56,27 @@ function App () {
     setValue('montoaFinanciar', montoaFinanciar)
     setValue('interes', tasaInteresAnual)
     setValue('marca', marcaVehiculo)
-    setValue('precio', valor)
+    setValue('precio', `$${valor.toLocaleString('en-US')}`)
     setValue('plazo', plazo)
-    setValue('entrada', entrada)
+    setValue('entrada', `$${entrada.toFixed(0).toLocaleString('en-US')}`)
     setValue('cuotas', cuotaMensual.toFixed())
-    setValue('encaje', encaje)
-    setValue('total', total)
+    setValue('encaje', `$${encaje.toFixed(0).toLocaleString('en-US')}`)
+    // setValue('total', `$${total.toFixed().toLocaleString('en-US')}`)
+
+    if (!isNaN(total)) {
+      setValue('total', `$${total.toFixed().toLocaleString('en-US')}`)
+    } else {
+      // Maneja el caso cuando total no es un número válido
+    }
 
     setFormularioEnviado(true) // Marca el formulario como enviado al final de tu lógica
   }
+
   const [valor, setValor] = useState('') // Agrega este estado al componente
 
   const handleValorChange = (e) => {
     setValor(e.target.value)
+    setValue('textoEntrada', 0)
     console.log(e.target.value)
   }
 
@@ -83,7 +91,6 @@ function App () {
   const year = currentDate.getFullYear()
   const month = String(currentDate.getMonth() + 1).padStart(2, '0')
   const day = String(currentDate.getDate()).padStart(2, '0')
-
   const formattedDate = `${year}-${month}-${day}`
 
   const print = () => window.print()
@@ -105,7 +112,7 @@ function App () {
                 </div>
                 <div className='w-full max-w-screen-lg flex flex-col py-4'>
                   <div className='font-semibold'>Marca: {watch('marca', '')} </div>
-                  <div className='font-semibold'>Precio: $ {watch('precio', '')} </div>
+                  <div className='font-semibold'>Precio: <input type='text' value={watch('precio', '')} /> </div>
                 </div>
                 <div className='w-full max-w-screen-lg flex flex-row p-4 bg-sky-600 text-white text-center'>
                   <div className='w-1/5'>
@@ -141,20 +148,20 @@ function App () {
                   </div>
                   <div className='w-1/5 text-end'>
 
-                    <div>$ {watch('cuotas', '')} </div>
+                    <div> ${watch('cuotas', '')} </div>
                   </div>
 
                 </div>
                 <div className='font-semibold p-2'>
                   <div className='flex flex-row justify-between'>
-                    <div>Forma de Pago: </div><div>Entrada:</div><div>$ {watch('entrada', '')} </div>
+                    <div>Forma de Pago: </div><div>Entrada:</div><div> {watch('entrada', '')} </div>
                   </div>
                   <div className='flex flex-row justify-between'>
-                    <div>Encaje 5%:</div><div>$ {watch('encaje', '')} </div>
+                    <div>Encaje 5%:</div><div>{watch('encaje', '')} </div>
                   </div>
                   <div className='flex flex-row justify-between'>
                     <div>Total :</div>
-                    <div>$ {watch('total', '')} </div>
+                    <div> <input type='text' /> {watch('total', '')} </div>
                   </div>
                 </div>
                 <div>
@@ -237,10 +244,10 @@ function App () {
             )
           : (
             <>
-              <div className='flex justify-center'>
+              <div className='flex justify-center p-8 '>
 
                 <form className='w-full max-w-lg' onSubmit={handleSubmit(onSubmit)}>
-
+                  <div className='w-full px-3 mb-9 md:mb-3 text-center font-bold text-xl'>COTIZADOR</div>
                   <div className='flex flex-wrap -mx-3 mb-6'>
 
                     <div className='w-full md:w-1/2 px-3 mb-9 md:mb-3'>
@@ -258,7 +265,7 @@ function App () {
                     <div className='relative w-full md:w-1/2 px-3 mb-6 md:mb-3'>
                       <label className=' text-gray-700 text-sm font-bold mb-2'>PORCENTAJE DE ENTRADA</label>
                       <select
-                        className='block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500'
+                        className='appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-500  rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white'
                         {...register('entrada', {
 
                           required: {
@@ -267,6 +274,7 @@ function App () {
                           }
                         })}
                         onChange={handleEntradaChange}
+
                       >
                         <option />
                         <option value='30'>30%</option>
@@ -276,7 +284,7 @@ function App () {
 
                       </select>
                       {errors.entrada && <span>Este campo es requerido</span>}
-                      <div className='pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700'>
+                      <div className='pointer-events-none absolute inset-y-0 pt-6 right-4 flex items-center px-2 text-gray-700'>
                         <svg className='fill-current h-4 w-4' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z' /></svg>
                       </div>
                     </div>
@@ -285,28 +293,30 @@ function App () {
                       <label className='block text-gray-700 text-sm font-bold mb-2 uppercase' htmlFor='Entrada'>Entrada real</label>
 
                       <input
-                        className='appearance-none block w-full bg-gray-200 text-gray-700 border   rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white'
-                        type='text' placeholder='Entrada Real'
+                        className='appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-500  rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white'
+                        type='text'
+                        placeholder='Entrada Real'
                         disabled
-                        value={`$ ${watch('textoEntrada')}`}
+                        value={watch('textoEntrada') ? `$ ${watch('textoEntrada')}` : ''}
+
                       />
 
                     </div>
                     <div className='w-full md:w-1/2 px-3 mb-6 md:mb-3'>
                       <label className='block text-gray-700 text-sm font-bold mb-2 uppercase'>Tipo de vehiculo</label>
                       <select
-                        className='block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500 '
+                        className='appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-500  rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white'
                         {...register('tipoVehiculo', { required: true })}
                       >
-                        <option value={16}>liviano</option>
-                        <option value={13}>pesado</option>
+                        <option value={16}>Liviano</option>
+                        <option value={13}>Pesado</option>
 
                       </select>
                     </div>
                     <div className='w-full md:w-1/2 px-3 mb-6 md:mb-3 relative'>
                       <label className='block text-gray-700 text-sm font-bold mb-2 uppercase'>Plazo (meses)</label>
                       <select
-                        className='block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500 '
+                        className='appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-500  rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white'
                         {...register('plazo', { required: true })}
                       >
 
@@ -316,7 +326,7 @@ function App () {
                         <option value='72'>72</option>
 
                       </select>
-                      <div className='pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700'>
+                      <div className='pointer-events-none absolute inset-y-0 pt-6 right-4 flex items-center px-2 text-gray-700'>
                         <svg className='fill-current h-4 w-4' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z' /></svg>
                       </div>
                     </div>
@@ -393,7 +403,7 @@ function App () {
                         name='terminos'
                         value={false}
                         type='checkbox'
-                      /> Aceptar términos y condiciones de ley de datos<br />
+                      /> Aceptar <a href='https://mtbusiness-corp.com/' target='_new' className='font-medium text-sky-600'>  términos y condiciones</a> de ley de datos<br />
                       {errors.terminos && <span>Debe aceptar los terminos y condiciones</span>}
                     </div>
                     <div className='w-full md:w-full px-3 mb-6 md:mb-3 py-4 text-center'>
