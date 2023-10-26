@@ -54,23 +54,24 @@ function App () {
     console.log('La cuota mensual es: $' + cuotaMensual.toFixed(2))
 
     console.log(data)
+    // valore con comas
+
+    const valorFinal = Number(valor).toLocaleString('en-EN', { style: 'currency', currency: 'USD' })
+    const cuotaFinal = Number(cuotaMensual).toFixed(0).toLocaleString('en-EN', { style: 'currency', currency: 'USD' })
+    const encajeFinal = Number(encaje).toLocaleString('en-EN', { style: 'currency', currency: 'USD' })
+    const entradaFinal = Number(entrada).toLocaleString('en-EN', { style: 'currency', currency: 'USD' })
+    const totalFinal = Number(total).toLocaleString('en-EN', { style: 'currency', currency: 'USD' })
 
     // mostrar info
     setValue('montoaFinanciar', montoaFinanciar)
     setValue('interes', tasaInteresAnual)
     setValue('marca', marcaVehiculo)
-    setValue('precio', `$${valor.toLocaleString('en-US')}`)
+    setValue('precio', valorFinal)
     setValue('plazo', plazo)
-    setValue('entrada', `$${entrada.toFixed(2).toLocaleString('en-US')}`)
-    setValue('cuotas', cuotaMensual.toFixed())
-    setValue('encaje', `$${encaje.toFixed(2).toLocaleString('en-US')}`)
-    // setValue('total', `$${total.toFixed().toLocaleString('en-US')}`)
-
-    if (!isNaN(total)) {
-      setValue('total', `$${total.toFixed(2).toLocaleString('en-US')}`)
-    } else {
-      // Maneja el caso cuando total no es un número válido
-    }
+    setValue('entrada', entradaFinal)
+    setValue('cuotas', cuotaFinal)
+    setValue('encaje', encajeFinal)
+    setValue('total', totalFinal)
 
     setFormularioEnviado(true) // Marca el formulario como enviado al final de tu lógica
 
@@ -88,14 +89,19 @@ function App () {
 
   const handleValorChange = (e) => {
     setValor(e.target.value)
-    setValue('textoEntrada', 0)
+
     console.log(e.target.value)
   }
 
   const handleEntradaChange = (e) => {
     const porcentajeEntrada = parseFloat(e.target.value)
-    const entradaValor = valor * (porcentajeEntrada / 100)
-    setValue('textoEntrada', entradaValor.toFixed(0))
+    const entradaValor = (valor * (porcentajeEntrada / 100)).toFixed(2)
+
+    // Aplicar toLocaleString() para agregar comas en miles
+    const entradaConComas = Number(entradaValor).toLocaleString('en-EN', { })
+
+    setValue('textoEntrada', entradaConComas)
+    console.log(entradaConComas)
   }
 
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -421,7 +427,7 @@ function App () {
                     </div>
                     <div className='w-full md:w-full px-3 mb-6 md:mb-3 py-4 text-center'>
                       <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' type='submit'>Calcular</button>
-                      <p className='text-gray-300'>version 0.1</p>
+                      <p className='text-gray-300'>version 0.1.1</p>
                     </div>
                   </div>
                 </form>
