@@ -269,7 +269,7 @@ function App () {
                         className='appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-500  rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white'
                         type='text'
                         placeholder='Valor del vehiculo'
-                        {...register('valor', { required: false })}
+                        {...register('valor', { required: true })}
                         onChange={handleValorChange}
                       />
                       {errors.valor && <span>Este campo es requerido</span>}
@@ -319,7 +319,7 @@ function App () {
                       <label className='block text-gray-700 text-sm font-bold mb-2 uppercase'>Tipo de vehiculo</label>
                       <select
                         className='appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-500  rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white'
-                        {...register('tipoVehiculo', { required: false })}
+                        {...register('tipoVehiculo', { required: true })}
                       >
                         <option value={16.5}>Liviano</option>
                         <option value={16.5}>Pesado</option>
@@ -330,7 +330,7 @@ function App () {
                       <label className='block text-gray-700 text-sm font-bold mb-2 uppercase'>Plazo (meses)</label>
                       <select
                         className='appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-500  rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white'
-                        {...register('plazo', { required: false })}
+                        {...register('plazo', { required: true })}
                       >
 
                         <option value='36'>36</option>
@@ -362,7 +362,7 @@ function App () {
                       <input
                         className='appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-500  rounded py-3 px-4  leading-tight focus:outline-none focus:bg-white'
                         type='text' placeholder='Nombres completos'
-                        {...register('nombres', { required: false })}
+                        {...register('nombres', { required: true })}
                       />
                       {errors.nombres && <span>Este campo es requerido</span>}
 
@@ -373,7 +373,7 @@ function App () {
                       <input
                         className='appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-500  rounded py-3 px-4  leading-tight focus:outline-none focus:bg-white'
                         type='text' placeholder='Cédula'
-                        {...register('cedula', { required: false })}
+                        {...register('cedula', { required: true })}
                       />
                       {errors.cedula && <span>Este campo es requerido</span>}
 
@@ -387,7 +387,7 @@ function App () {
                         type='text' placeholder='Correo'
                         {...register('correo', {
                           required: {
-                            value: false,
+                            value: true,
                             message: 'Este campo es requerido'
                           },
                           pattern: {
@@ -405,14 +405,14 @@ function App () {
                       <input
                         className='appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-500 rounded py-3 px-4  leading-tight focus:outline-none focus:bg-white'
                         type='text' placeholder='Teléfono'
-                        {...register('telefono', { required: false })}
+                        {...register('telefono', { required: true })}
                       />
                       {errors.telefono && <span>Este campo es requerido</span>}
                     </div>
                     <div className='w-full px-3 mb-6 md:mb-3'>
                       <input
                         className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
-                        {...register('terminos', { required: false })}
+                        {...register('terminos', { required: true })}
                         name='terminos'
                         value={false}
                         type='checkbox'
