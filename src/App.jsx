@@ -1,11 +1,13 @@
 import { useForm } from 'react-hook-form'
-import { useState } from 'react'
+import React, { useState, useRef } from 'react'
+import emailjs from '@emailjs/browser'
 
 import logo from './assets/BS-Corp-Logo.png'
 
 function App () {
   const { register, formState: { errors }, watch, setValue, handleSubmit } = useForm()
   const [formularioEnviado, setFormularioEnviado] = useState(false) // Añade el estado
+
   const onSubmit = (data) => {
     let feeFinanciero = 500
     const interesAnual = Number(data.tipoVehiculo)
@@ -33,7 +35,7 @@ function App () {
 
     function calcularCuotaMensual (montoPrestamo, tasaInteresAnual, plazoMeses) {
       // Convertir tasa de interés anual a tasa mensual
-      const tasaInteresMensual = tasaInteresAnual / 12 / 100
+      const tasaInteresMensual = 0.012808087
 
       // Calcular cuota mensual
       const cuotaMensual = (montoPrestamo * tasaInteresMensual) / (1 - Math.pow(1 + tasaInteresMensual, -plazoMeses))
@@ -59,18 +61,27 @@ function App () {
     setValue('marca', marcaVehiculo)
     setValue('precio', `$${valor.toLocaleString('en-US')}`)
     setValue('plazo', plazo)
-    setValue('entrada', `$${entrada.toFixed(0).toLocaleString('en-US')}`)
+    setValue('entrada', `$${entrada.toFixed(2).toLocaleString('en-US')}`)
     setValue('cuotas', cuotaMensual.toFixed())
-    setValue('encaje', `$${encaje.toFixed(0).toLocaleString('en-US')}`)
+    setValue('encaje', `$${encaje.toFixed(2).toLocaleString('en-US')}`)
     // setValue('total', `$${total.toFixed().toLocaleString('en-US')}`)
 
     if (!isNaN(total)) {
-      setValue('total', `$${total.toFixed().toLocaleString('en-US')}`)
+      setValue('total', `$${total.toFixed(2).toLocaleString('en-US')}`)
     } else {
       // Maneja el caso cuando total no es un número válido
     }
 
     setFormularioEnviado(true) // Marca el formulario como enviado al final de tu lógica
+
+    // enviar correo
+
+    emailjs.sendForm('service_bl2wdeq', 'template_gbre1ul', data, 'tfzmRWBZxWfcJF1TN')
+      .then((result) => {
+        console.log('desde mailjs ', result.text)
+      }, (error) => {
+        console.log(error.text)
+      })
   }
 
   const [valor, setValor] = useState('') // Agrega este estado al componente
@@ -258,7 +269,7 @@ function App () {
                         className='appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-500  rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white'
                         type='text'
                         placeholder='Valor del vehiculo'
-                        {...register('valor', { required: true })}
+                        {...register('valor', { required: false })}
                         onChange={handleValorChange}
                       />
                       {errors.valor && <span>Este campo es requerido</span>}
@@ -308,10 +319,10 @@ function App () {
                       <label className='block text-gray-700 text-sm font-bold mb-2 uppercase'>Tipo de vehiculo</label>
                       <select
                         className='appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-500  rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white'
-                        {...register('tipoVehiculo', { required: true })}
+                        {...register('tipoVehiculo', { required: false })}
                       >
-                        <option value={16}>Liviano</option>
-                        <option value={13}>Pesado</option>
+                        <option value={16.5}>Liviano</option>
+                        <option value={16.5}>Pesado</option>
 
                       </select>
                     </div>
@@ -319,7 +330,7 @@ function App () {
                       <label className='block text-gray-700 text-sm font-bold mb-2 uppercase'>Plazo (meses)</label>
                       <select
                         className='appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-500  rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white'
-                        {...register('plazo', { required: true })}
+                        {...register('plazo', { required: false })}
                       >
 
                         <option value='36'>36</option>
@@ -351,7 +362,7 @@ function App () {
                       <input
                         className='appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-500  rounded py-3 px-4  leading-tight focus:outline-none focus:bg-white'
                         type='text' placeholder='Nombres completos'
-                        {...register('nombres', { required: true })}
+                        {...register('nombres', { required: false })}
                       />
                       {errors.nombres && <span>Este campo es requerido</span>}
 
@@ -362,7 +373,7 @@ function App () {
                       <input
                         className='appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-500  rounded py-3 px-4  leading-tight focus:outline-none focus:bg-white'
                         type='text' placeholder='Cédula'
-                        {...register('cedula', { required: true })}
+                        {...register('cedula', { required: false })}
                       />
                       {errors.cedula && <span>Este campo es requerido</span>}
 
@@ -376,7 +387,7 @@ function App () {
                         type='text' placeholder='Correo'
                         {...register('correo', {
                           required: {
-                            value: true,
+                            value: false,
                             message: 'Este campo es requerido'
                           },
                           pattern: {
@@ -394,14 +405,14 @@ function App () {
                       <input
                         className='appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-500 rounded py-3 px-4  leading-tight focus:outline-none focus:bg-white'
                         type='text' placeholder='Teléfono'
-                        {...register('telefono', { required: true })}
+                        {...register('telefono', { required: false })}
                       />
                       {errors.telefono && <span>Este campo es requerido</span>}
                     </div>
                     <div className='w-full px-3 mb-6 md:mb-3'>
                       <input
                         className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
-                        {...register('terminos', { required: true })}
+                        {...register('terminos', { required: false })}
                         name='terminos'
                         value={false}
                         type='checkbox'
@@ -410,6 +421,7 @@ function App () {
                     </div>
                     <div className='w-full md:w-full px-3 mb-6 md:mb-3 py-4 text-center'>
                       <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' type='submit'>Calcular</button>
+                      <p className='text-gray-300'>version 0.1</p>
                     </div>
                   </div>
                 </form>
