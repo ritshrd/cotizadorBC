@@ -7,6 +7,7 @@ import logo from './assets/BS-Corp-Logo.png'
 function App () {
   const { register, formState: { errors }, watch, setValue, handleSubmit } = useForm()
   const [formularioEnviado, setFormularioEnviado] = useState(false) // Añade el estado
+  const formRef = useRef() // Crea una referencia al formulario
 
   const onSubmit = (data) => {
     let feeFinanciero = 500
@@ -20,6 +21,9 @@ function App () {
       feeFinanciero = 500
       console.log('fee financiero = ' + feeFinanciero)
     }
+
+    const nombres = (data.nombres)
+    const correo = (data.correo)
 
     const marcaVehiculo = (data.marcaVehiculo)
     const plazo = (data.plazo)
@@ -53,7 +57,6 @@ function App () {
     console.log('plazo = ' + plazo)
     console.log('La cuota mensual es: $' + cuotaMensual.toFixed(2))
 
-    console.log(data)
     // valore con comas
 
     const valorFinal = Number(valor).toLocaleString('en-EN', { style: 'currency', currency: 'USD' })
@@ -74,15 +77,37 @@ function App () {
     setValue('total', totalFinal)
 
     setFormularioEnviado(true) // Marca el formulario como enviado al final de tu lógica
-
+    console.log(data)
     // enviar correo
+    const datosCorreo = {
+      cuotaFinal
+      /*      nombres: data.nombres,
+      correo: data.correo,
+      marcaVehiculo: data.marcaVehiculo,
+      valor: data.valor,
+      plazo: data.plazo,
+            textoEntrada: entradaFinal,
+      encaje: encajeFinal,
+      total: totalFinal */
+    }
+    // Crear un objeto con los datos que quieres enviar
 
-    emailjs.sendForm('service_bl2wdeq', 'template_gbre1ul', data, 'tfzmRWBZxWfcJF1TN')
-      .then((result) => {
-        console.log('desde mailjs ', result.text)
-      }, (error) => {
-        console.log(error.text)
-      })
+    emailjs.sendForm(
+      'service_bl2wdeq',
+      'template_gbre1ul',
+      formRef.current, // Usa la referencia al formulario
+      'tfzmRWBZxWfcJF1TN',
+      datosCorreo
+
+    )
+      .then(
+        (result) => {
+          console.log(result.text)
+        },
+        (error) => {
+          console.log(error.text)
+        }
+      )
   }
 
   const [valor, setValor] = useState('') // Agrega este estado al componente
@@ -265,7 +290,11 @@ function App () {
             <>
               <div className='flex justify-center p-8 '>
 
-                <form className='w-full max-w-lg' onSubmit={handleSubmit(onSubmit)}>
+                <form
+                  ref={formRef}
+                  onSubmit={handleSubmit(onSubmit)}
+                  className='w-full max-w-lg'
+                >
                   <div className='w-full px-3 mb-9 md:mb-3 text-center font-bold text-xl'>COTIZADOR</div>
                   <div className='flex flex-wrap -mx-3 mb-6'>
 
@@ -367,8 +396,10 @@ function App () {
 
                       <input
                         className='appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-500  rounded py-3 px-4  leading-tight focus:outline-none focus:bg-white'
-                        type='text' placeholder='Nombres completos'
+                        type='text'
+                        placeholder='Nombres completos'
                         {...register('nombres', { required: true })}
+
                       />
                       {errors.nombres && <span>Este campo es requerido</span>}
 
@@ -424,6 +455,7 @@ function App () {
                         type='checkbox'
                       /> Aceptar <a href='https://mtbusiness-corp.com/' target='_new' className='font-medium text-sky-600'>  términos y condiciones</a> de ley de datos<br />
                       {errors.terminos && <span>Debe aceptar los terminos y condiciones</span>}
+
                     </div>
                     <div className='w-full md:w-full px-3 mb-6 md:mb-3 py-4 text-center'>
                       <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' type='submit'>Calcular</button>
