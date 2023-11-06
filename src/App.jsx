@@ -64,6 +64,7 @@ function App () {
     const encajeFinal = Number(encaje).toLocaleString('en-EN', { style: 'currency', currency: 'USD' })
     const entradaFinal = Number(entrada).toLocaleString('en-EN', { style: 'currency', currency: 'USD' })
     const totalFinal = Number(total).toLocaleString('en-EN', { style: 'currency', currency: 'USD' })
+    //
 
     // mostrar info
     setValue('montoaFinanciar', montoaFinanciar)
@@ -80,15 +81,16 @@ function App () {
     console.log(data)
     // enviar correo
     const datosCorreo = {
-      cuotaFinal
-      /*      nombres: data.nombres,
+
+      nombres: data.nombres,
       correo: data.correo,
       marcaVehiculo: data.marcaVehiculo,
       valor: data.valor,
       plazo: data.plazo,
-            textoEntrada: entradaFinal,
+      textoEntrada: entradaFinal,
       encaje: encajeFinal,
-      total: totalFinal */
+      total: totalFinal,
+      cuota: cuotaMensual
     }
     // Crear un objeto con los datos que quieres enviar
 
@@ -111,6 +113,7 @@ function App () {
   }
 
   const [valor, setValor] = useState('') // Agrega este estado al componente
+  const [entradaF, setEntradaF] = useState('') // Agrega este estado al componente
 
   const handleValorChange = (e) => {
     setValor(e.target.value)
@@ -119,14 +122,56 @@ function App () {
   }
 
   const handleEntradaChange = (e) => {
-    const porcentajeEntrada = parseFloat(e.target.value)
+    const porcentajeEntrada = (e.target.value)
     const entradaValor = (valor * (porcentajeEntrada / 100)).toFixed(2)
 
     // Aplicar toLocaleString() para agregar comas en miles
-    const entradaConComas = Number(entradaValor).toLocaleString('en-EN', { })
+    // const entradaConComas = Number(entradaValor).toLocaleString('en-EN', { })
+    const entradaConComas = Number(entradaValor)
 
     setValue('textoEntrada', entradaConComas)
     console.log(entradaConComas)
+    setEntradaF(entradaValor)
+  }
+  const handleCuotaChange = (e) => {
+    const plazoMeses = Number(e.target.value)
+    const montoPrestamo = parseFloat(watch('valor'))
+    const entrada = watch('textoEntrada')
+
+    console.log('montoPrestamo=' + montoPrestamo)
+    console.log('entrada=' + entrada)
+
+    let feeFinanciero = 500
+    if (valor > 39999) {
+      feeFinanciero = 1000
+      console.log('fee financiero = ' + feeFinanciero)
+    } else {
+      feeFinanciero = 500
+      console.log('fee financiero = ' + feeFinanciero)
+    }
+
+    // monto a financiar
+    //    const montoaFinanciar = valor - entrada + feeFinanciero
+    const calcularMontoAFinanciar = (montoPrestamo, entrada, feeFinanciero) => {
+      return montoPrestamo - entrada + feeFinanciero
+    }
+    const montoaFinanciar = calcularMontoAFinanciar(montoPrestamo, entrada, feeFinanciero)
+    console.log('monto a financiar ' + montoaFinanciar)
+    //
+
+    function calcularCuotaMensual (montoaFinanciar, plazoMeses) {
+      // Convertir tasa de interés anual a tasa mensual
+
+      // Calcular cuota mensual
+      const cuotaMensual = (montoaFinanciar * 0.012808087) / (1 - Math.pow(1 + 0.012808087, -plazoMeses))
+
+      return cuotaMensual.toFixed(0)
+    }
+
+    const cuotaMensual = calcularCuotaMensual(montoaFinanciar, plazoMeses)
+
+    setValue('cuotaMeses', cuotaMensual)
+    console.log('cuota mensual es ' + cuotaMensual)
   }
 
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -345,7 +390,8 @@ function App () {
                         type='text'
                         placeholder='Entrada Real'
                         disabled
-                        value={watch('textoEntrada') ? `$ ${watch('textoEntrada')}` : ''}
+                        name='textoEntrada'
+                        defaultValue={watch('textoEntrada') ? `$ ${watch('textoEntrada')}` : ''}
 
                       />
 
@@ -365,15 +411,27 @@ function App () {
                       <label className='block text-gray-700 text-sm font-bold mb-2 uppercase'>Plazo (meses)</label>
                       <select
                         className='appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-500  rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white'
-                        {...register('plazo', { required: true })}
-                      >
 
+                        {...register('plazo', { required: true })}
+                        onChange={handleCuotaChange}
+
+                      >
+                        <option />
                         <option value='36'>36</option>
                         <option value='48'>48</option>
                         <option value='60'>60</option>
                         <option value='72'>72</option>
 
                       </select>
+                      <input
+                        className='appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-500  rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white'
+                        type='hidden'
+                        name='cuotaMeses'
+                        placeholder='cuota'
+                        defaultValue={watch('cuotaMeses') ? `$ ${watch('cuotaMeses')}` : ''}
+
+                      />
+
                       <div className='pointer-events-none absolute inset-y-0 pt-6 right-4 flex items-center px-2 text-gray-700'>
                         <svg className='fill-current h-4 w-4' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z' /></svg>
                       </div>
