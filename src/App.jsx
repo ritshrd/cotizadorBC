@@ -517,7 +517,7 @@ function App () {
                     </div>
                     <div className='w-full md:w-full px-3 mb-6 md:mb-3 py-4 text-center'>
                       <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' type='submit'>Calcular</button>
-                      <p className='text-gray-300'>version 0.1.1</p>
+                      <p className='text-gray-300'>version 0.1.2</p>
                     </div>
                   </div>
                 </form>
